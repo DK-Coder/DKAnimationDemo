@@ -30,7 +30,7 @@
     [button setImage:[UIImage imageNamed:@"Resources.bundle/Thumb_Pressed.png"] forState:UIControlStateSelected];
     [rootScroll addSubview:button];
     
-    ThumbUpAnimationButton *button2 = [[ThumbUpAnimationButton alloc] initWithFrame:CGRectMake(100.f, 230.f, 60.f, 60.f)];
+    ThumbUpAnimationButton *button2 = [[ThumbUpAnimationButton alloc] initWithFrame:CGRectMake(100.f, 350.f, 60.f, 60.f)];
     [rootScroll addSubview:button2];
 }
 

@@ -37,7 +37,8 @@
 
 - (void)sharedInit
 {
-    arrayColors = @[[UIColor redColor], [UIColor orangeColor], [UIColor purpleColor]];
+    arrayColors = @[[UIColor redColor], [UIColor orangeColor], [UIColor purpleColor],
+                    [UIColor yellowColor], [UIColor greenColor], [UIColor blueColor]];
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(thumbUpAnimation)];
     [self addGestureRecognizer:tapGesture];
@@ -53,7 +54,7 @@
     UIImage *image = [UIImage imageNamed:@"Resources.bundle/Thumb_Pressed.png"];
     imageLayer.contents = (id)image.CGImage;
     
-    int index = arc4random_uniform(3);
+    int index = arc4random_uniform((int)arrayColors.count);
     CALayer *moveLayer = [CALayer layer];
     moveLayer.contents = (id)[image changeColorTo:arrayColors[index]].CGImage;
     moveLayer.frame = imageLayer.frame;
@@ -61,11 +62,12 @@
     
     CABasicAnimation *scaleAnimation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
     scaleAnimation.byValue = @(2.f);
-    scaleAnimation.duration = .4;
+    scaleAnimation.duration = .3f;
     
+    CGPoint endPoint = CGPointMake(0.f, self.frame.size.height / 2.f - self.frame.origin.y);
     UIBezierPath *pathForMove = [UIBezierPath bezierPath];
     [pathForMove moveToPoint:moveLayer.position];
-    [pathForMove addCurveToPoint:CGPointMake(0.f, -200.f) controlPoint1:CGPointMake(moveLayer.position.x + 30.f, moveLayer.position.y - 80.f) controlPoint2:CGPointMake(moveLayer.position.x - 30.f, moveLayer.position.y - 120.f)];
+    [pathForMove addCurveToPoint:endPoint controlPoint1:CGPointMake(120.f - index * index * index, endPoint.y / 3.f) controlPoint2:CGPointMake(-80.f + index * index * index, endPoint.y / 3.f * 2.f)];
     CAKeyframeAnimation *moveAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
     moveAnimation.path = pathForMove.CGPath;
     moveAnimation.beginTime = scaleAnimation.duration;
@@ -83,7 +85,7 @@
     
     CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
     animationGroup.animations = @[scaleAnimation, moveAnimation, opacityAnimation];
-    animationGroup.duration = 2.4;
+    animationGroup.duration = scaleAnimation.duration + moveAnimation.duration;
     animationGroup.fillMode = kCAFillModeForwards;
     animationGroup.removedOnCompletion = NO;
     [moveLayer addAnimation:animationGroup forKey:nil];
