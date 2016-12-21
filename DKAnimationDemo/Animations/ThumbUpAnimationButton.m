@@ -12,7 +12,6 @@
 @interface ThumbUpAnimationButton()
 {
     CALayer *imageLayer;
-    NSArray *arrayColors;
 }
 @end
 
@@ -37,7 +36,7 @@
 
 - (void)sharedInit
 {
-    arrayColors = @[[UIColor redColor], [UIColor orangeColor], [UIColor purpleColor],
+    self.dk_arrayRandomColors = @[[UIColor redColor], [UIColor orangeColor], [UIColor purpleColor],
                     [UIColor yellowColor], [UIColor greenColor], [UIColor blueColor]];
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(thumbUpAnimation)];
@@ -52,11 +51,15 @@
 - (void)thumbUpAnimation
 {
     UIImage *image = [UIImage imageNamed:@"Resources.bundle/Thumb_Pressed.png"];
-    imageLayer.contents = (id)image.CGImage;
+    if (_dk_ThumbUpPressedColor) {
+        imageLayer.contents = (id)[image changeColorTo:_dk_ThumbUpPressedColor].CGImage;
+    } else {
+        imageLayer.contents = (id)image.CGImage;
+    }
     
-    int index = arc4random_uniform((int)arrayColors.count);
+    int index = arc4random_uniform((int)self.dk_arrayRandomColors.count);
     CALayer *moveLayer = [CALayer layer];
-    moveLayer.contents = (id)[image changeColorTo:arrayColors[index]].CGImage;
+    moveLayer.contents = (id)[image changeColorTo:self.dk_arrayRandomColors[index]].CGImage;
     moveLayer.frame = imageLayer.frame;
     [self.layer addSublayer:moveLayer];
     
@@ -78,7 +81,7 @@
     CABasicAnimation *opacityAnimation = [CABasicAnimation animationWithKeyPath:@"opacity"];
     opacityAnimation.fromValue = @(1.f);
     opacityAnimation.toValue = @(0.f);
-    opacityAnimation.duration = .4f;
+    opacityAnimation.duration = .5f;
     opacityAnimation.beginTime = scaleAnimation.duration + moveAnimation.duration - opacityAnimation.duration;
     opacityAnimation.fillMode = kCAFillModeForwards;
     opacityAnimation.removedOnCompletion = NO;
